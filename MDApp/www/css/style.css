@@ -1,1 +1,16 @@
 /* Empty. Add your own CSS if you like */
+
+.camera-view {
+    width: 100%;
+    background-image: url('../img/target.png');
+    background-position: center center;
+    background-size: cover;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+}
+
+.capturedImage {
+    width: 100%;
+    padding: 30px;
+}

@@ -14,22 +14,28 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/jquery/dist/jquery.min.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
+    <style>
+        html, body, ion-tabs, ion-nav-view, .pane {
+          background-color: rgba(255, 255, 255, 0.98)
+        }
+    </style>
+
 </head>
-<body ng-app="MDApp">
+<body ng-app="MDApp" ng-controller="MainCtrl">
 
-    <ion-nav-bar class="bar-positive">
-        <ion-nav-back-button class="button-clear">
-            <i class="icon ion-ios-arrow-left"></i> Back
-        </ion-nav-back-button>
-    </ion-nav-bar>
-    <ion-nav-view></ion-nav-view>
-
+<ion-nav-bar class="bar-positive">
+    <ion-nav-back-button class="button-clear">
+        <i class="icon ion-ios-arrow-left"></i> Back
+    </ion-nav-back-button>
+</ion-nav-bar>
+<ion-nav-view style="background-color: transparent"></ion-nav-view>
 
 
 </body>

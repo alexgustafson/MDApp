@@ -28,6 +28,7 @@ angular.module('MDApp', ['ionic'])
       }
     }).state('tabs.analysis', {
       url: '/analysis',
+      cache: false,
       views: {
         'analysis-tab': {
           templateUrl: 'views/analysis/index.html',
@@ -40,6 +41,15 @@ angular.module('MDApp', ['ionic'])
       views: {
         'archive-tab': {
           templateUrl: 'views/archive/index.html',
+          controller: 'ArchiveCtrl'
+        }
+      }
+
+    }).state('tabs.archive_detail', {
+      url: '/archive/:archiveID',
+      views: {
+        'archive-tab': {
+          templateUrl: 'views/archive/detail.html',
           controller: 'ArchiveCtrl'
         }
       }
@@ -69,30 +79,109 @@ angular.module('MDApp', ['ionic'])
     });
   })
 
-  .controller('HomeCtrl', function ($scope) {
-    console.log('Home');
+  .controller('MainCtrl', function ($scope) {
+    console.log('Main');
+    $scope.capturedImage = {};
+    $scope.previewImage = {};
+
   })
 
-  .controller('CameraCtrl', function ($scope) {
+  .controller('HomeCtrl', function ($scope) {
+    console.log('Home');
+    $scope.$on("$ionicView.afterEnter", function (event, data) {
+
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.98)'});
+
+    });
+
+
+    $scope.$on("$ionicView.beforeLeave", function (event, data) {
+
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.1)'});
+
+    });
+
+
+  })
+
+  .controller('CameraCtrl', function ($scope, $timeout, $rootScope) {
     console.log('CameraCtrl');
 
-    if (window.StatusBar) {
-
-
+    $scope.captureImage = function() {
+      cordova.plugins.camerapreview.takePicture();
     }
 
-    $scope.startCamera = function () {
+    cordova.plugins.camerapreview.setOnPictureTakenHandler(function(result){
+      console.log('Image Captured');
+      console.log(result[0]);
+      $rootScope.capturedImage = result[0];//originalPicturePath;
+      $rootScope.previewImage = result[1];//previewPicturePath;
+    });
+
+
+    $scope.$on("$ionicView.beforeEnter", function (event, data) {
+
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.02)'});
+
+    });
+
+    $scope.$on("$ionicView.afterEnter", function (event, data) {
+
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.01)'});
 
       var tapEnabled = true; //enable tap take picture
-      var dragEnabled = true; //enable preview box drag across the screen
-      var toBack = false; //send preview box to the back of the webview
-      var rect = {x: 100, y: 100, width: 200, height: 200};
-
-      cordova.plugins.camerapreview.startCamera(rect, "front", tapEnabled, dragEnabled, toBack);
-    }
-
-    $scope.showCamera = function () {
+      var dragEnabled = false; //enable preview box drag across the screen
+      var toBack = true; //send preview box to the back of the webview
+      var rect = {x: 0, y: 34, width: 340, height: 400};
+      // handle event
+      console.log("State Params: ", data.stateParams);
+      cordova.plugins.camerapreview.startCamera(rect, "back", tapEnabled, dragEnabled, toBack);
       cordova.plugins.camerapreview.show();
-    }
+
+
+      $timeout(function () {
+        $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.05)'});
+      }, 500)
+
+    });
+
+    $scope.$on("$ionicView.afterLeave", function (event, data) {
+      // handle event
+      console.log("State Params: ", data.stateParams);
+      cordova.plugins.camerapreview.hide();
+      cordova.plugins.camerapreview.stopCamera();
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.92)'});
+
+    });
+
+  })
+
+  .controller('ArchiveCtrl', function ($scope) {
+    console.log('Archive');
+    $scope.$on("$ionicView.beforeEnter", function (event, data) {
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.98)'});
+    });
+
+
+    $scope.$on("$ionicView.beforeLeave", function (event, data) {
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.1)'});
+    });
+
+  })
+
+  .controller('AnalysisCtrl', function ($scope, $rootScope) {
+
+    console.log('Archive');
+
+    $scope.displayImage = $rootScope.previewImage;
+
+    $scope.$on("$ionicView.afterEnter", function (event, data) {
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.98)'});
+      document.getElementById('capturedImage').src = $scope.displayImage.replace("assets-library://", "cdvfile://localhost/assets-library/");
+    });
+
+    $scope.$on("$ionicView.afterLeave", function (event, data) {
+      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.1)'});
+    });
 
   })
