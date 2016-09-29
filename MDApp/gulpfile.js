@@ -1,3 +1,4 @@
+var karma = require('karma').server;
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var bower = require('bower');
@@ -48,4 +49,13 @@ gulp.task('git-check', function(done) {
     process.exit(1);
   }
   done();
+});
+
+gulp.task('test', function(done) {
+    karma.start({
+        configFile: __dirname + '/tests/my.conf.js',
+        singleRun: true
+    }, function() {
+        done();
+    });
 });

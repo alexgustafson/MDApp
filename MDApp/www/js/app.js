@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('MDApp', ['ionic'])
+var app = angular.module('MDApp', ['ionic', 'ngCordova', 'MDApp.services'])
 
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider.state('tabs', {
@@ -31,7 +31,7 @@ angular.module('MDApp', ['ionic'])
       cache: false,
       views: {
         'analysis-tab': {
-          templateUrl: 'views/analysis/index.html',
+          templateUrl: 'views/analysis/fake.html',
           controller: 'AnalysisCtrl'
         }
       }
@@ -71,7 +71,6 @@ angular.module('MDApp', ['ionic'])
         // a much nicer keyboard experience.
         cordova.plugins.Keyboard.disableScroll(true);
 
-
       }
       if (window.StatusBar) {
         StatusBar.styleDefault();
@@ -79,30 +78,16 @@ angular.module('MDApp', ['ionic'])
     });
   })
 
+
   .controller('MainCtrl', function ($scope) {
     console.log('Main');
-    $scope.capturedImage = {};
-    $scope.previewImage = {};
-
   })
+
 
   .controller('HomeCtrl', function ($scope) {
     console.log('Home');
-    $scope.$on("$ionicView.afterEnter", function (event, data) {
-
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.98)'});
-
-    });
-
-
-    $scope.$on("$ionicView.beforeLeave", function (event, data) {
-
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.1)'});
-
-    });
-
-
   })
+
 
   .controller('CameraCtrl', function ($scope, $timeout, $rootScope) {
     console.log('CameraCtrl');
@@ -118,13 +103,6 @@ angular.module('MDApp', ['ionic'])
       $rootScope.previewImage = result[1];//previewPicturePath;
     });
 
-
-    $scope.$on("$ionicView.beforeEnter", function (event, data) {
-
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.02)'});
-
-    });
-
     $scope.$on("$ionicView.afterEnter", function (event, data) {
 
       $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.01)'});
@@ -138,7 +116,6 @@ angular.module('MDApp', ['ionic'])
       cordova.plugins.camerapreview.startCamera(rect, "back", tapEnabled, dragEnabled, toBack);
       cordova.plugins.camerapreview.show();
 
-
       $timeout(function () {
         $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.05)'});
       }, 500)
@@ -151,37 +128,27 @@ angular.module('MDApp', ['ionic'])
       cordova.plugins.camerapreview.hide();
       cordova.plugins.camerapreview.stopCamera();
       $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.92)'});
-
     });
 
   })
 
-  .controller('ArchiveCtrl', function ($scope) {
+  .controller('ArchiveCtrl', function ($scope, MDLesionImage) {
     console.log('Archive');
-    $scope.$on("$ionicView.beforeEnter", function (event, data) {
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.98)'});
-    });
 
-
-    $scope.$on("$ionicView.beforeLeave", function (event, data) {
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.1)'});
-    });
+    console.log(MDLesionImage.check())
 
   })
 
   .controller('AnalysisCtrl', function ($scope, $rootScope) {
 
-    console.log('Archive');
+    console.log('Analysis');
 
-    $scope.displayImage = $rootScope.previewImage;
+    //$scope.displayImage = $rootScope.previewImage;
 
     $scope.$on("$ionicView.afterEnter", function (event, data) {
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.98)'});
-      document.getElementById('capturedImage').src = $scope.displayImage.replace("assets-library://", "cdvfile://localhost/assets-library/");
+      //document.getElementById('capturedImage').src = $scope.displayImage.replace("assets-library://", "cdvfile://localhost/assets-library/");
+
     });
 
-    $scope.$on("$ionicView.afterLeave", function (event, data) {
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.1)'});
-    });
 
   })

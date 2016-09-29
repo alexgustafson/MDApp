@@ -1,8 +1,61 @@
-<ion-view title="2016 - 07 -21" >
+<ion-view title="2016 - 07 -21">
+
+    <ion-nav-buttons side="right">
+        <button class="button" ng-click="doSomething()">
+            Edit
+        </button>
+    </ion-nav-buttons>
+
     <ion-content>
+        <div class="list card">
+            <div class="item item-body">
 
-                <img class="capturedImage" id="capturedImage" src="img/fake/archive_01.png">
+                <img class="full-image" src="img/fake/archive_01.png">
+                <h2>Original Image</h2>
 
+            </div>
+            <div class="item item-body">
 
+                <img class="full-image" src="img/fake/archive_01_border.png">
+                <h2>Border Image</h2>
+
+            </div>
+            <div class="item item-body">
+
+                <h2>Analysis</h2>
+                <results>
+                    <label>Asymmetry:</label>
+                    <value>2</value>
+                </results>
+                <results>
+                    <label>Border Irregularity:</label>
+                    <value>2</value>
+                </results>
+                <results>
+                    <label>Color:</label>
+                    <value>2</value>
+                </results>
+                <results>
+                    <label>Differential Structure:</label>
+                    <value>2</value>
+                </results>
+                <results>
+                    <label>TDS Score:</label>
+                    <value>2</value>
+                </results>
+
+            </div>
+            <div class="item item-body">
+
+                <h2>Metadata</h2>
+                <h3>Description:</h3>
+                <p>I am not sure if this lesion is new of if I have always had it. I phototgraphed it on
+                    the 27th of July. I will take another image in 3 months and compare the size and shape.</p>
+                <h3>Location:</h3>
+                <p>Left Forearm - Under side </p>
+
+            </div>
+
+        </div>
     </ion-content>
 </ion-view>
