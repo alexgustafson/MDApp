@@ -28,3 +28,12 @@ textarea {
     border: 1px solid rgba(128, 128, 128, 0.45);
     border-radius: 5px;
 }
+
+.camera-spinner {
+    position: absolute;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px);
+    z-index: 500;
+    height: 50px;
+    width: 50px;
+}
