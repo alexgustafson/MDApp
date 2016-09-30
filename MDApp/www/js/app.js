@@ -3,7 +3,8 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var app = angular.module('MDApp', ['ionic', 'ngCordova', 'MDApp.services'])
+var app = angular.module('MDApp',
+  ['ionic', 'ngCordova', 'MDApp.data.services', 'MDApp.image.services'])
 
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider.state('tabs', {
@@ -59,7 +60,7 @@ var app = angular.module('MDApp', ['ionic', 'ngCordova', 'MDApp.services'])
     $urlRouterProvider.otherwise("/tab/home");
   })
 
-  .run(function ($ionicPlatform) {
+  .run(function ($ionicPlatform, MDDataService) {
     $ionicPlatform.ready(function () {
       if (window.cordova && window.cordova.plugins.Keyboard) {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -70,6 +71,8 @@ var app = angular.module('MDApp', ['ionic', 'ngCordova', 'MDApp.services'])
         // from snapping when text inputs are focused. Ionic handles this internally for
         // a much nicer keyboard experience.
         cordova.plugins.Keyboard.disableScroll(true);
+
+        MDDataService.initializeDB();
 
       }
       if (window.StatusBar) {
@@ -89,7 +92,7 @@ var app = angular.module('MDApp', ['ionic', 'ngCordova', 'MDApp.services'])
   })
 
 
-  .controller('CameraCtrl', function ($scope, $timeout, $rootScope) {
+  .controller('CameraCtrl', function ($scope, $timeout, $rootScope, MDLesionImage, MDImageService) {
     console.log('CameraCtrl');
 
     $scope.captureImage = function() {
@@ -101,6 +104,12 @@ var app = angular.module('MDApp', ['ionic', 'ngCordova', 'MDApp.services'])
       console.log(result[0]);
       $rootScope.capturedImage = result[0];//originalPicturePath;
       $rootScope.previewImage = result[1];//previewPicturePath;
+
+      MDLesionImage.newImage(result[0]).then(function(result){
+        console.log(result);
+      });
+
+      MDImageService.getBorder(result[0]);
     });
 
     $scope.$on("$ionicView.afterEnter", function (event, data) {

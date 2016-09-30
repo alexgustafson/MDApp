@@ -1,30 +1,39 @@
-describe('Data Unit Tests', function () {
+describe('MDLesionImage Tests', function () {
 
   beforeEach(function() {
 
     angular.module('$cordovaSQLite', []);
 
-    module('MDApp.services');
+    module('MDApp.data.services');
 
     module(function ($provide) {
 
       $provide.service('MDDataService', function () {
-        this.getData = function (quark) {
-          return quark;
-        }
+
+
+        this.initializeDB = function() {};
+
+        this.insertItemIntoTable = function(values, table){
+
+          var statement = "INSERT INTO " + table + " VALUES(" + values + ")";
+          console.log(statement)
+          return 1
+        };
+
       });
 
     });
   });
 
 
-  it('will mottoXmattofy any word', inject(function (MDLesionImage) {
-    expect(MDLesionImage.mottomatto('XoX')).toEqual('mottoXoXmatto');
+  it('will load MDLesionImage', inject(function (MDLesionImage) {
+    expect(MDLesionImage.check()).toEqual('loaded');
   }));
 
-  it('will mitto any word', inject(function (MDLesionImage) {
-    expect(MDLesionImage.mitomato('XoX')).toEqual('XoX');
+  it('will insert image data', inject(function (MDLesionImage) {
+    expect(MDLesionImage.newImage('path/to/image.jpeg')).toEqual(1);
   }));
+
 
 
 })
