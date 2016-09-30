@@ -2,7 +2,7 @@ angular.module('MDApp.image.services', [])
 
   .service('MDBorderService', function ($q) {
 
-    this.defered = null;
+
 
     this.getBorder = function (imagePath) {
 
@@ -16,21 +16,21 @@ angular.module('MDApp.image.services', [])
       options.headers = { Connection: "close" };
       options.params = { key: options.fileName };
 
-      this.defered = $q.defer();
+      var defered = $q.defer();
 
       var win = function (r) {
         console.log('upload successfull');
-        this.defered.resolve(r.response);
+        defered.resolve(JSON.parse(r.response));
       }
 
       var fail = function (error) {
-        this.defered.reject(error);
+        defered.reject(error);
       }
 
       var ft = new FileTransfer();
       ft.upload(fileURL, encodeURI("http://mdserver.offshore.webfactional.com/border/upload/"), win, fail, options);
 
-      return this.defered.promise;
+      return defered.promise;
 
     }
 
@@ -42,8 +42,6 @@ angular.module('MDApp.image.services', [])
   })
 
   .service('MDAnalysisService', function ($q) {
-
-    this.defered = null;
 
     this.getAnalysis = function (imagePath) {
 

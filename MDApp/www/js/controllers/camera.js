@@ -11,18 +11,17 @@ angular.module('MDApp.controllers')
     cordova.plugins.camerapreview.setOnPictureTakenHandler(function(result){
 
       $rootScope.capturedImage = result[0];//originalPicturePath;
-      //$rootScope.previewImage = result[1];//previewPicturePath;
       $rootScope.previewImage = $rootScope.capturedImage;
-      $rootScope.capturedImage = $sce.trustAsResourceUrl($rootScope.capturedImage.replace("assets-library://", "cdvfile://localhost/assets-library/"));
-
+      $rootScope.capturedImage = $rootScope.capturedImage.replace("assets-library://", "cdvfile://localhost/assets-library/");
 
       MDLesionImage.newImage(result[0]).then(function(result){
         console.log(result);
       });
 
-      MDBorderService.getBorder(result[0]).then(function(result) {
-        $rootScope.borderImage = result.response.border;
+      MDBorderService.getBorder(result[0]).then(function(response) {
+        $rootScope.image_analysis = response;
       });
+
     });
 
 

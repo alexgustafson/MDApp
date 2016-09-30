@@ -84,7 +84,8 @@ var app = angular.module('MDApp',
   })
 
 
-  .controller('MainCtrl', function ($scope) {
+  .controller('ApplicationCtrl', function ($scope, $rootScope) {
+    $rootScope.host = 'http://mdserver.offshore.webfactional.com';
     console.log('Main');
   })
 
