@@ -3,8 +3,10 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
+angular.module('MDApp.controllers', []);
+
 var app = angular.module('MDApp',
-  ['ionic', 'ngCordova', 'MDApp.data.services', 'MDApp.image.services'])
+  ['ionic', 'ngCordova', 'MDApp.data.services', 'MDApp.image.services', 'MDApp.controllers'])
 
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider.state('tabs', {
@@ -32,7 +34,7 @@ var app = angular.module('MDApp',
       cache: false,
       views: {
         'analysis-tab': {
-          templateUrl: 'views/analysis/fake.html',
+          templateUrl: 'views/analysis/index.html',
           controller: 'AnalysisCtrl'
         }
       }
@@ -92,72 +94,7 @@ var app = angular.module('MDApp',
   })
 
 
-  .controller('CameraCtrl', function ($scope, $timeout, $rootScope, MDLesionImage, MDImageService) {
-    console.log('CameraCtrl');
-
-    $scope.captureImage = function() {
-      cordova.plugins.camerapreview.takePicture();
-    }
-
-    cordova.plugins.camerapreview.setOnPictureTakenHandler(function(result){
-      console.log('Image Captured');
-      console.log(result[0]);
-      $rootScope.capturedImage = result[0];//originalPicturePath;
-      $rootScope.previewImage = result[1];//previewPicturePath;
-
-      MDLesionImage.newImage(result[0]).then(function(result){
-        console.log(result);
-      });
-
-      MDImageService.getBorder(result[0]);
-    });
-
-    $scope.$on("$ionicView.afterEnter", function (event, data) {
-
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(34, 34, 34, 0.01)'});
-
-      var tapEnabled = true; //enable tap take picture
-      var dragEnabled = false; //enable preview box drag across the screen
-      var toBack = true; //send preview box to the back of the webview
-      var rect = {x: 0, y: 34, width: 340, height: 400};
-      // handle event
-      console.log("State Params: ", data.stateParams);
-      cordova.plugins.camerapreview.startCamera(rect, "back", tapEnabled, dragEnabled, toBack);
-      cordova.plugins.camerapreview.show();
-
-      $timeout(function () {
-        $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.05)'});
-      }, 500)
-
-    });
-
-    $scope.$on("$ionicView.afterLeave", function (event, data) {
-      // handle event
-      console.log("State Params: ", data.stateParams);
-      cordova.plugins.camerapreview.hide();
-      cordova.plugins.camerapreview.stopCamera();
-      $('html, body, ion-tabs, ion-nav-view, .pane').css({'background-color': 'rgba(255, 255, 255, 0.92)'});
-    });
-
-  })
-
-  .controller('ArchiveCtrl', function ($scope, MDLesionImage) {
-    console.log('Archive');
-
-    console.log(MDLesionImage.check())
-
-  })
-
-  .controller('AnalysisCtrl', function ($scope, $rootScope) {
-
-    console.log('Analysis');
-
-    //$scope.displayImage = $rootScope.previewImage;
-
-    $scope.$on("$ionicView.afterEnter", function (event, data) {
-      //document.getElementById('capturedImage').src = $scope.displayImage.replace("assets-library://", "cdvfile://localhost/assets-library/");
-
-    });
 
 
-  })
+
+

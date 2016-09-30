@@ -1,7 +1,71 @@
 <ion-view title="Analysis" hide-back-button="true">
+
+
+    <ion-nav-buttons side="right">
+        <button class="button" ng-click="doSomething()">
+            Save
+        </button>
+
+    </ion-nav-buttons>
+
     <ion-content>
+        <div class="list card">
+            <div class="item item-body">
 
-        <img class="capturedImage" id="capturedImage" src="">
+                <img class="full-image" ng-src="{{ original_image }}">
+                <h2>Original Image</h2>
 
+            </div>
+            <div class="item item-body">
+
+                <img class="full-image" ng-src="{{ border_image }}">
+                <h2>Border Analysis</h2>
+                <p>Please confirm that the border has been precisely calculated.</p>
+                <button class="button button-balanced" ng-click="confirmBorder(true)">
+                    Confirm
+                </button>
+                <button class="button button-stable" ng-click="confirmBorder(false)">
+                    Cancel
+                </button>
+
+            </div>
+            <div class="item item-body">
+
+                <h2>Analysis</h2>
+                <results>
+                    <label>Asymmetry:</label>
+                    <value>2</value>
+                </results>
+                <results>
+                    <label>Border Irregularity:</label>
+                    <value>2</value>
+                </results>
+                <results>
+                    <label>Color:</label>
+                    <value>2</value>
+                </results>
+                <results>
+                    <label>Differential Structure:</label>
+                    <value>2</value>
+                </results>
+                <results>
+                    <label>TDS Score:</label>
+                    <value>2</value>
+                </results>
+
+            </div>
+            <div class="item item-body">
+
+                <h2>Metadata</h2>
+                <h3>Date:</h3>
+                <h4>18 Sept. 2016 : 18:22</h4>
+                <h3>Description:</h3>
+                <textarea rows="6" style="width: 100%">I am not sure if this lesion is new of if I have always had it. I phototgraphed it on the 27th of July. I will take another image in 3 months and compare the size and shape.</textarea>
+                <h3>Location:</h3>
+                <textarea rows="2" style="width: 100%">Left Forearm - Under side </textarea>
+
+            </div>
+
+        </div>
     </ion-content>
 </ion-view>

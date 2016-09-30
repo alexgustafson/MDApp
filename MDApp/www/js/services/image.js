@@ -1,45 +1,55 @@
 angular.module('MDApp.image.services', [])
 
-  .service('MDImageService', function ($q) {
+  .service('MDBorderService', function ($q) {
 
-    this.getBorder = function (image) {
+    this.defered = null;
 
-      var fileURL = image
+    this.getBorder = function (imagePath) {
 
-      var win = function (r) {
-        console.log("Code = " + r.responseCode);
-        console.log("Response = " + r.response);
-        console.log("Sent = " + r.bytesSent);
-      }
-
-      var fail = function (error) {
-        console.log("An error has occurred: Code =  " + error.code);
-        console.log("upload error source " + error.source);
-        console.log("upload error target " + error.target);
-      }
+      var fileURL = imagePath
 
       var options = new FileUploadOptions();
       options.fileKey = "image";
       options.fileName = fileURL.substr(fileURL.lastIndexOf('/') + 1);
       options.mimeType = "image/jpeg";
       options.chunkedMode = false;
-      options.headers = {
-          Connection: "close"
-        };
+      options.headers = { Connection: "close" };
+      options.params = { key: options.fileName };
 
-      var params = {};
-      params.value11 = fileURL.substr(fileURL.lastIndexOf('/') + 1);
-      params.key = fileURL.substr(fileURL.lastIndexOf('/') + 1);
+      this.defered = $q.defer();
 
-      options.params = params;
+      var win = function (r) {
+        console.log('upload successfull');
+        this.defered.resolve(r.response);
+      }
+
+      var fail = function (error) {
+        this.defered.reject(error);
+      }
 
       var ft = new FileTransfer();
-      ft.upload(fileURL, encodeURI("http://192.168.1.63:8000/border/upload/"), win, fail, options);
+      ft.upload(fileURL, encodeURI("http://mdserver.offshore.webfactional.com/border/upload/"), win, fail, options);
 
+      return this.defered.promise;
 
+    }
+
+    this.confirmBorder = function (imagePath, confirmed) {
 
     }
 
 
-  });
+  })
 
+  .service('MDAnalysisService', function ($q) {
+
+    this.defered = null;
+
+    this.getAnalysis = function (imagePath) {
+
+
+
+
+    };
+
+  });
