@@ -29,7 +29,7 @@ angular.module('MDApp.data.services', [])
         creationDate: "TEXT",
         borderImagePath: "TEXT",
         borderVersionID: "INTEGER",
-        borderConfirmed: "BOOLEAN",
+        borderConfirmed: "INTEGER",
         assessmentDate: "DATE",
         assessmentVersionID: "INTEGER",
         sfaMajor: "INTEGER",
@@ -90,15 +90,8 @@ angular.module('MDApp.data.services', [])
         originalImagePath: path,
         creationDate: new Date(),
         borderImagePath: "",
-        borderVersionID: "",
-        borderConfirmed: false,
-        assessmentDate: "",
-        assessmentVersionID: "",
-        sfaMajor: "",
-        sfaMinor: "",
-        borderIrregularity : "",
-        colorCount : "",
-        tdsScore: ""
+        borderVersionID: 0,
+        borderConfirmed: false
       });
 
       MDDataService.add(image);
