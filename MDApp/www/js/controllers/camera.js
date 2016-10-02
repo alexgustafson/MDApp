@@ -1,6 +1,6 @@
 angular.module('MDApp.controllers')
 
-  .controller('CameraCtrl', function ($scope, $timeout, $rootScope, MDLesionImage, MDBorderService, $sce, $state) {
+  .controller('CameraCtrl', function ($scope, $timeout, $rootScope, MDAppState, MDLesionImage, MDBorderService, $sce, $state) {
     console.log('CameraCtrl');
 
 
@@ -19,17 +19,25 @@ angular.module('MDApp.controllers')
     }
 
     cordova.plugins.camerapreview.setOnPictureTakenHandler(function (result) {
+      // only ios
+      var path = result[0].replace("assets-library://", "cdvfile://localhost/assets-library/");
 
-      $rootScope.capturedImage = result[0];//originalPicturePath;
-      $rootScope.previewImage = $rootScope.capturedImage;
-      $rootScope.capturedImage = $rootScope.capturedImage.replace("assets-library://", "cdvfile://localhost/assets-library/");
+      $rootScope.capturedImage = path;//originalPicturePath;
+      $rootScope.previewImage = path;
+      $rootScope.capturedImage = path;
 
-      $rootScope.activeImage = MDLesionImage.newImage(result[0]);
+      $rootScope.activeImage = MDLesionImage.newImage(path);
+
 
       MDBorderService.getBorder(result[0]).then(function (response) {
 
+        $rootScope.activeImage.originalImagePath = response.original;
         $rootScope.activeImage.borderImagePath = response.border;
         $rootScope.activeImage.key = response.key;
+        //$rootScope.activeImage.save();
+
+        MDAppState.ActiveImageKey.valueStr = response.key;
+        MDAppState.save();
 
         $scope.$parent.disableUI = false;
         $scope.disableUI = false;

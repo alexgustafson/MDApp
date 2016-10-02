@@ -34,13 +34,17 @@ angular.module('MDApp.data.services', [])
         assessmentVersionID: "INTEGER",
         sfaMajor: "INTEGER",
         sfaMinor: "INTEGER",
-        borderIrregularity : "INTEGER",
-        colorCount : "INTEGER",
+        borderIrregularity: "INTEGER",
+        colorCount: "INTEGER",
         tdsScore: "REAL",
         key: "TEXT"
       });
 
-      this.ApplicationState.index('key',{unique:true});
+      this.LesionImage.prototype.save = function () {
+        persistence.flush();
+      }
+
+      this.LesionImage.index('key', {unique: true});
 
       this.Metadata = persistence.define('Metadata', {
         bodyLocationID: "INTEGER",
@@ -48,6 +52,10 @@ angular.module('MDApp.data.services', [])
         y: "INTEGER",
         description: "TEXT"
       });
+
+      this.Metadata.prototype.save = function () {
+        persistence.flush();
+      }
 
       this.LesionImage.hasOne('metadata', this.Metadata);
 
@@ -57,23 +65,32 @@ angular.module('MDApp.data.services', [])
         valueInt: "INTEGER"
       });
 
-      this.ApplicationState.index('key',{unique:true});
+      this.ApplicationState.prototype.save = function () {
+        persistence.flush();
+      }
+
+      this.ApplicationState.index('key', {unique: true});
 
       persistence.schemaSync();
 
       var allImages = this.LesionImage.all();
 
-      allImages.list(null, function(results) {
-        results.forEach(function(r) {
+      allImages.list(null, function (results) {
+        results.forEach(function (r) {
           console.log(r.filePath);
           window.lesionimage = r;
         })
       })
     };
 
-    this.add = function (item){
+    this.add = function (item) {
       persistence.add(item);
+      persistence.flush();
     };
+
+    this.save = function () {
+      persistence.flush();
+    }
 
 
   })
@@ -81,9 +98,6 @@ angular.module('MDApp.data.services', [])
 
   .service('MDLesionImage', ['MDDataService', function (MDDataService) {
 
-    this.check = function () {
-      return 'loaded'
-    };
 
     this.newImage = function (path) {
       var image = new MDDataService.LesionImage({
@@ -91,13 +105,44 @@ angular.module('MDApp.data.services', [])
         creationDate: new Date(),
         borderImagePath: "",
         borderVersionID: 0,
-        borderConfirmed: false
+        borderConfirmed: 0
       });
 
       MDDataService.add(image);
       return image;
     }
 
+    this.save = function () {
+      MDDataService.save()
+    };
+
+  }])
+
+  .service('MDAppState', ['MDDataService', function (MDDataService) {
+
+    this.ActiveImageKey = null;
+
+    this.save = function () {
+      MDDataService.save()
+    };
+
+    this.initialize = function () {
+
+      var stateManager = this;
+
+      MDDataService.ApplicationState.all().filter('key', '=', 'ActiveImageKey').one(function (result) {
+        if (result) {
+          stateManager.ActiveImageKey = result;
+        } else {
+          stateManager.ActiveImageKey = new MDDataService.ApplicationState({
+            key: "ActiveImageKey",
+            valueStr: ""
+          });
+
+          MDDataService.add(stateManager.ActiveImageKey);
+        }
+      });
+    };
 
 
   }]);

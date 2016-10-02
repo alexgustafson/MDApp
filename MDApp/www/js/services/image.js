@@ -17,7 +17,6 @@ angular.module('MDApp.image.services', [])
       var defered = $q.defer();
 
       var win = function (r) {
-        console.log('upload successfull');
         defered.resolve(JSON.parse(r.response));
       }
 

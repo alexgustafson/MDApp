@@ -62,7 +62,7 @@ var app = angular.module('MDApp',
     $urlRouterProvider.otherwise("/tab/home");
   })
 
-  .run(function ($ionicPlatform, MDDataService) {
+  .run(function ($ionicPlatform, MDDataService, MDAppState) {
     $ionicPlatform.ready(function () {
       if (window.cordova && window.cordova.plugins.Keyboard) {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -75,8 +75,7 @@ var app = angular.module('MDApp',
         cordova.plugins.Keyboard.disableScroll(true);
 
         MDDataService.initializeDB();
-
-
+        MDAppState.initialize();
 
       }
       if (window.StatusBar) {
