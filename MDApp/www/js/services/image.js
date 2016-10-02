@@ -2,8 +2,6 @@ angular.module('MDApp.image.services', [])
 
   .service('MDBorderService', function ($q) {
 
-
-
     this.getBorder = function (imagePath) {
 
       var fileURL = imagePath

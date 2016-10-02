@@ -76,6 +76,8 @@ var app = angular.module('MDApp',
 
         MDDataService.initializeDB();
 
+
+
       }
       if (window.StatusBar) {
         StatusBar.styleDefault();
@@ -87,6 +89,23 @@ var app = angular.module('MDApp',
   .controller('ApplicationCtrl', function ($scope, $rootScope) {
     $rootScope.host = 'http://mdserver.offshore.webfactional.com';
     console.log('Main');
+
+    $scope.disableUI = false;
+
+    $scope.tabStates = {
+      home: true,
+      camera: true,
+      analysis: false,
+      archive: false
+    };
+
+    $scope.shouldDisable = function (tab) {
+      if ($scope.disableUI) {
+        return true;
+      }
+
+      return false;
+    }
   })
 
 

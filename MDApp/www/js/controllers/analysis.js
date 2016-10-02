@@ -3,9 +3,9 @@ angular.module('MDApp.controllers')
 
   .controller('AnalysisCtrl', function ($scope, $rootScope, MDBorderService, $sce) {
 
-    $scope.original_image = $sce.trustAsResourceUrl($rootScope.host+$rootScope.image_analysis.original);
-    $scope.border_image = $sce.trustAsResourceUrl($rootScope.host+$rootScope.image_analysis.border);
-    $scope.imageKey = $rootScope.image_analysis.id;
+    $scope.original_image = $sce.trustAsResourceUrl($rootScope.host+$rootScope.activeImage.originalImagePath);
+    $scope.border_image = $sce.trustAsResourceUrl($rootScope.host+$rootScope.activeImage.borderImagePath);
+    $scope.imageKey = $rootScope.activeImage.key;
 
     $scope.$on("$ionicView.afterEnter", function (event, data) {
 

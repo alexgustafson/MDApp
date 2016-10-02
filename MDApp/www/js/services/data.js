@@ -1,121 +1,110 @@
 angular.module('MDApp.data.services', [])
 
-  .service('MDDataService', function($q) {
+  .service('MDDataService', function ($q) {
 
     var db = null;
     this.defered = null;
+    this.LesionImage = null;
+    this.Metadata = null;
+    this.ApplicationState = null;
 
-    document.addEventListener('deviceready', function() {
+    document.addEventListener('deviceready', function () {
       db = window.sqlitePlugin.openDatabase({name: "mdapp.db", location: 'default'});
     });
 
-    this.initializeDB = function() {
+    this.initializeDB = function () {
 
-      db.transaction(function(tx) {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS Images (filePath, creationDate)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS LesionImage (filePath, creationDate)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS Metadata (lesionImage INTEGER, ' +
-          'lesionDescription, lesionLocation INTEGER)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS LesionLocation (bodyLocationID INTEGER, ' +
-          'x INTEGER, y INTEGER)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS BorderImage (lesionImage INTEGER, ' +
-          'filePath, creationDate)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS RiskAssessment (lesionImage INTEGER, ' +
-          'assessmentDate, versionNr INTEGER, sfaMajor INTEGER, sfaMinor INTEGER, ' +
-          'border INTEGER, color INTEGER, tdsScore REAL )');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS ActiveElement (LesionImage INTEGER)');
-      }, function(error) {
-        console.log('Transaction ERROR: ' + error.message);
-      }, function(){
-        console.log('Populated database OK')
+      persistence.store.cordovasql.config(
+        persistence,
+        'mdapp.db',
+        '0.0.1',                // DB version
+        'MDApp Database',          // DB display name
+        5 * 1024 * 1024,        // DB size (WebSQL fallback only)
+        0,                      // SQLitePlugin Background processing disabled
+        2                       // DB location (iOS only), 0 (default): Documents, 1: Library, 2: Library/LocalDatabase
+      );
+
+      this.LesionImage = persistence.define('LesionImage', {
+        originalImagePath: "TEXT",
+        creationDate: "TEXT",
+        borderImagePath: "TEXT",
+        borderVersionID: "INTEGER",
+        borderConfirmed: "BOOLEAN",
+        assessmentDate: "DATE",
+        assessmentVersionID: "INTEGER",
+        sfaMajor: "INTEGER",
+        sfaMinor: "INTEGER",
+        borderIrregularity : "INTEGER",
+        colorCount : "INTEGER",
+        tdsScore: "REAL",
+        key: "TEXT"
       });
 
-    };
+      this.ApplicationState.index('key',{unique:true});
 
-    this.select = function(query) {
-
-      this.defered = $q.defer();
-
-      db.transaction(function (tx) {
-
-        tx.executeSql(query, values, function(tx, resultSet){
-          this.defered.resolve(resultSet);
-        }, function(tx, error) {
-          this.deferred.reject(error);
-        });
+      this.Metadata = persistence.define('Metadata', {
+        bodyLocationID: "INTEGER",
+        x: "INTEGER",
+        y: "INTEGER",
+        description: "TEXT"
       });
 
-      return this.defered.promise;
-    };
+      this.LesionImage.hasOne('metadata', this.Metadata);
 
-    this.selectFirst = function (query, value) {
-      this.defered = $q.defer();
-
-      db.transaction(function (tx) {
-
-        tx.executeSql(query, values, function(tx, resultSet){
-          this.defered.resolve(resultSet.rows.item(0));
-        }, function(tx, error) {
-          this.deferred.reject(error);
-        });
+      this.ApplicationState = persistence.define('ApplicationState', {
+        key: "TEXT",
+        valueStr: "TEXT",
+        valueInt: "INTEGER"
       });
 
-      return this.defered.promise;
-    };
+      this.ApplicationState.index('key',{unique:true});
 
+      persistence.schemaSync();
 
-    this.getItemFromTableWithID = function(table, id) {
+      var allImages = this.LesionImage.all();
 
-      return db.transaction(function (tx) {
-        tx.executeSql('SELECT * FROM ' + table + ' WHERE ROWID = ' + id);
+      allImages.list(null, function(results) {
+        results.forEach(function(r) {
+          console.log(r.filePath);
+          window.lesionimage = r;
+        })
       })
-
     };
 
-    this.insertItemIntoTable = function(query, values) {
+    this.add = function (item){
+      persistence.add(item);
+    };
 
-      this.defered = $q.defer();
-
-      db.transaction(function (tx) {
-
-        tx.executeSql(query, values, function(tx, resultSet){
-          this.defered.resolve(resultSet);
-        }, function(tx, error) {
-          this.deferred.reject(error);
-        });
-      });
-
-      return this.defered.promise;
-    }
 
   })
 
 
-  .service('MDLesionImage', ['MDDataService', function(MDDataService){
+  .service('MDLesionImage', ['MDDataService', function (MDDataService) {
 
-    this.check = function() {return 'loaded'};
-    this.table = 'LesionImage'
+    this.check = function () {
+      return 'loaded'
+    };
 
-    this.getLesionImage = function(id) {
-      return MDDataService.getItemFromTableWithID(this.table, id);
+    this.newImage = function (path) {
+      var image = new MDDataService.LesionImage({
+        originalImagePath: path,
+        creationDate: new Date(),
+        borderImagePath: "",
+        borderVersionID: "",
+        borderConfirmed: false,
+        assessmentDate: "",
+        assessmentVersionID: "",
+        sfaMajor: "",
+        sfaMinor: "",
+        borderIrregularity : "",
+        colorCount : "",
+        tdsScore: ""
+      });
+
+      MDDataService.add(image);
+      return image;
     }
 
-    this.newImage = function(path) {
-      var date = new Date()
-      var values = [path, date.toISOString()];
-      var query = "INSERT INTO Images (filePath, creationDate) VALUES (?,?) ";
 
-      return MDDataService.insertItemIntoTable(query, values);
-
-    }
-
-    this.getActiveImage = function() {
-
-      var query = 'SELECT * FROM Images ORDER BY ASC(?)'
-      var value = 'creationDate'
-
-      return MDDataService.selectFirst(query)
-
-    }
 
   }]);
