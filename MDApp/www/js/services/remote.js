@@ -1,4 +1,4 @@
-angular.module('MDApp.image.services', [])
+angular.module('MDApp.remote.services', [])
 
   .service('MDBorderService', function ($q) {
 

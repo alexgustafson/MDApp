@@ -1,7 +1,7 @@
 angular.module('MDApp.controllers')
 
 
-  .controller('AnalysisCtrl', function ($scope, $rootScope, MDBorderService, $sce) {
+  .controller('AnalysisViewCtrl', function ($scope, $rootScope, MDBorderService, $sce) {
 
 
 

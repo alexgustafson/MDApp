@@ -6,7 +6,7 @@
 angular.module('MDApp.controllers', []);
 
 var app = angular.module('MDApp',
-  ['ionic', 'ngCordova', 'MDApp.data.services', 'MDApp.image.services', 'MDApp.controllers'])
+  ['ionic', 'ngCordova', 'MDApp.data.services', 'MDApp.remote.services', 'MDApp.controllers'])
 
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider.state('tabs', {
@@ -18,7 +18,7 @@ var app = angular.module('MDApp',
       views: {
         'home-tab': {
           templateUrl: 'views/home/home.html',
-          controller: 'HomeCtrl'
+          controller: 'HomeViewCtrl'
         }
       }
     }).state('tabs.camera', {
@@ -26,7 +26,7 @@ var app = angular.module('MDApp',
       views: {
         'camera-tab': {
           templateUrl: 'views/camera/index.html',
-          controller: 'CameraCtrl'
+          controller: 'CameraViewCtrl'
         }
       }
     }).state('tabs.analysis', {
@@ -35,7 +35,7 @@ var app = angular.module('MDApp',
       views: {
         'analysis-tab': {
           templateUrl: 'views/analysis/index.html',
-          controller: 'AnalysisCtrl'
+          controller: 'AnalysisViewCtrl'
         }
       }
 
@@ -44,7 +44,7 @@ var app = angular.module('MDApp',
       views: {
         'archive-tab': {
           templateUrl: 'views/archive/index.html',
-          controller: 'ArchiveCtrl'
+          controller: 'ArchiveViewCtrl'
         }
       }
 
@@ -53,7 +53,7 @@ var app = angular.module('MDApp',
       views: {
         'archive-tab': {
           templateUrl: 'views/archive/detail.html',
-          controller: 'ArchiveCtrl'
+          controller: 'ArchiveDetailViewCtrl'
         }
       }
 
@@ -75,7 +75,7 @@ var app = angular.module('MDApp',
         cordova.plugins.Keyboard.disableScroll(true);
 
         MDDataService.initializeDB();
-        MDAppState.initialize();
+        MDAppState.initializeState();
 
       }
       if (window.StatusBar) {
@@ -85,11 +85,11 @@ var app = angular.module('MDApp',
   })
 
 
-  .controller('ApplicationCtrl', function ($scope, $rootScope) {
+  .controller('ApplicationCtrl', function ($scope, $rootScope, $state, MDAppState) {
     $rootScope.host = 'http://mdserver.offshore.webfactional.com';
     console.log('Main');
 
-    $scope.disableUI = false;
+    $scope.uiDiabled = false;
 
     $scope.tabStates = {
       home: true,
@@ -98,17 +98,35 @@ var app = angular.module('MDApp',
       archive: false
     };
 
-    $scope.shouldDisable = function (tab) {
-      if ($scope.disableUI) {
-        return true;
+    var diableUI = function(shouldDisable){
+      if(shouldDisable) {
+        $scope.disableUI = true;
+        $scope.tabStates.home = false;
+        $scope.tabStates.camera = false;
+        $scope.tabStates.analysis = false;
+        $scope.tabStates.archive = false;
+      }else {
+        $scope.disableUI = false;
+        $scope.tabStates.home = true;
+        $scope.tabStates.camera = true;
+        $scope.tabStates.analysis = true;
+        $scope.tabStates.archive = true;
       }
+    };
 
-      return false;
-    }
+    $scope.$on('disableUI', function(shouldDisable){
+      diableUI(shouldDisable);
+    })
+
+    $scope.$on('hasBorder', function() {
+      $state.go('tabs.analysis');
+    })
+
+
   })
 
 
-  .controller('HomeCtrl', function ($scope) {
+  .controller('HomeViewCtrl', function ($scope) {
     console.log('Home');
   })
 

@@ -1,6 +1,6 @@
 angular.module('MDApp.controllers')
 
-  .controller('CameraCtrl', function ($scope, $timeout, $rootScope, MDAppState, MDLesionImage, MDBorderService, $sce, $state) {
+  .controller('CameraViewCtrl', function ($scope, $timeout, $rootScope, MDAppState, MDLesionImage, MDBorderService) {
     console.log('CameraCtrl');
 
 
@@ -8,13 +8,8 @@ angular.module('MDApp.controllers')
       if ($scope.$parent.disableUI) {
         return;
       }
-      $scope.$parent.tabStates.home = false;
-      $scope.$parent.tabStates.analysis = false;
-      $scope.$parent.tabStates.camera = true;
-      $scope.$parent.tabStates.archive = false;
-      $scope.$parent.disableUI = true;
+      $scope.$emit('disableUI', true);
       $scope.disableUI = true;
-      console.log('capture activated');
       cordova.plugins.camerapreview.takePicture();
     }
 
@@ -28,25 +23,19 @@ angular.module('MDApp.controllers')
 
       $rootScope.activeImage = MDLesionImage.newImage(path);
 
-
       MDBorderService.getBorder(result[0]).then(function (response) {
 
         $rootScope.activeImage.originalImagePath = response.original;
         $rootScope.activeImage.borderImagePath = response.border;
         $rootScope.activeImage.key = response.key;
-        //$rootScope.activeImage.save();
 
         MDAppState.ActiveImageKey.valueStr = response.key;
         MDAppState.save();
 
-        $scope.$parent.disableUI = false;
         $scope.disableUI = false;
-        $scope.$parent.tabStates.home = true;
-        $scope.$parent.tabStates.analysis = true;
-        $scope.$parent.tabStates.camera = true;
-        $scope.$parent.tabStates.archive = false;
 
-        $state.go('tabs.analysis');
+        $scope.$emit('disableUI', false);
+        $scope.$emit('hasBorder');
 
       });
 

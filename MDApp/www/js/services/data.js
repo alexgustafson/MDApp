@@ -126,7 +126,7 @@ angular.module('MDApp.data.services', [])
       MDDataService.save()
     };
 
-    this.initialize = function () {
+    this.initializeState = function () {
 
       var stateManager = this;
 

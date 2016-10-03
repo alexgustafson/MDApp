@@ -1,6 +1,13 @@
 angular.module('MDApp.controllers')
 
-  .controller('ArchiveCtrl', function ($scope, MDLesionImage) {
+  .controller('ArchiveViewCtrl', function ($scope, MDLesionImage) {
+    console.log('Archive');
+
+    console.log(MDLesionImage.check())
+
+  })
+
+  .controller('ArchiveDetailViewCtrl', function ($scope, MDLesionImage) {
     console.log('Archive');
 
     console.log(MDLesionImage.check())
